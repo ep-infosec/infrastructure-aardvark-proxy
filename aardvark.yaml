@@ -1,0 +1,97 @@
+# Port for Aardvark to listen on
+port: 1729
+
+# Which backend to proxy to if request is kosher
+proxy_url: "http://localhost:8080/"
+
+# Max size in bytes for a request payload. 60MB.
+max_request_size: 62914560
+
+# Default IP forward header from httpd
+ipheader: x-forwarded-for
+
+# This is the text of the 403 response if a request is blocked
+spam_response: "Your request has been blocked. If you feel this is in error, please let us know at: abuse@infra.apache.org. Be sure to include your IP address so we know what to look for."
+
+# Debug prints for ...debug. disabled by default
+debug: false
+
+# Enable persistent storage of offenders
+persistence: true
+
+# Suppress repeat offenders from syslog. setting `debug: true` overrides this.
+suppress_repeats: true
+
+# This is where we save the bad requests, for further perusal. Only one request per IP is saved (the first)
+savedata: /tmp/aardvark
+
+##############################
+# The actual spam scan rules #
+##############################
+
+# When using the naïve spam corpus for form data, this threshold causes a block.
+# 0 is considered perfectly sane ham, 50 is bordering on spam, 100 is definitely spam
+enable_naive_scan: true
+naive_spam_threshold: 90
+
+# These automatically cause a ban
+spamurls:
+    - "/jira/rest/api/.+/issue/AAR-\\d+/comment"
+
+# Don't run spam check here...
+ignoreurls:
+    - "AttachTemporaryFile"
+
+# Match any of these to banninate
+postmatches:
+    - "mobilestrikehacktools"
+    - "monsterlegendshackx"
+    - "router customer service"
+    - "router customer support"
+    - "customer service number"
+    - "customer care phone"
+    - "\\b(https?[:/%32AF]*\\S*essay\\S*)\\b"
+    - "escorts"
+    - "solitairetimes"
+    - "myspades"
+    - "myeuchre"
+    - "ringtone"
+    - "keywords INNER JOIN keyworddefs ON keywords.keywordid"
+    - "\\b(https?[:/%32AF]*[^/\\s]*resume\\S*)\\b"
+    - "\\b(https?[:/%32AF]*\\S*800support\\S*)\\b"
+    - "drzafarsaifi"
+    - "\\b(https?[:/%32AF]*\\S*dissertation\\S*)\\b"
+    - "\\b(https?[:/%32AF]*[^/\\s]*assignment\\S*)\\b"
+    - "\\b(https?[:/%32AF]*[^/\\s]*dumps\\S*)\\b"
+    - "\\b(https?[:/%32AF]+[^/\\s]*lead\\S*)\\b"
+    - "\\b(https?[:/%32AF]*\\S*poker\\S*)\\b"
+    - "assignmenthelp"
+    - "paperwriting"
+    - "bestdiss"
+    - "besttempmail"
+    - "eventeca"
+    - "ngaydem"
+    - "moneyprinters"
+    - "free[- ]watch.+?listen"
+    - "https://tvvslivenba.co/"
+    - "certsexpert"
+    - "online bank"
+    - "bank online"
+    - "online deposit"
+    - "deposit online"
+    - "deposit bank"
+    - "bank deposit"
+    - "casino"
+    - "money back"
+    - "% discount"
+    - "Full Movie Online"
+    - "sevenmentor"
+    - "streamsable"
+
+# Match multiple of these to ban
+multimatch:
+    auxiliary:
+        - "p.?h.?o.?n.?e"
+        - "s.?u.?p.?p.?o.?r.?t"
+    required:
+        - "(1[-.\\s]+\\d\\d\\d[-.\\s]+\\d\\d\\d[-.\\s]+\\d\\d\\d\\d)"
